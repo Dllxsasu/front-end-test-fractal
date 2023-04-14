@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import DeleteConfirmationModal from './modals/DeleteConfirmationModal ';
 import ProductService from './services/ProductService';
 import { Container, Typography, makeStyles } from '@material-ui/core';
-
+import {useNavigate} from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: 'center',
@@ -17,11 +17,7 @@ const useStyles = makeStyles((theme) => ({
 function ProductList(props) {
 
  
-  const handleDelete = (index) => {
-    const newOrders = [...props.orders];
-    newOrders.splice(index, 1);
-    props.setOrders(newOrders);
-  };
+  
   const [selectedProduct, setSelectedProduct] = useState(null);
 const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [products, setProducts] = useState([]);
@@ -41,7 +37,7 @@ useEffect(() => {
     setIsDeleteModalOpen(false);
   };
   const classes = useStyles();
-
+  const navigate = useNavigate();
   const rows = [
     { id: 1, name: 'John Doe', price: 1 },
     { id: 2, name: 'Jane Smith', price: 23},
@@ -57,7 +53,10 @@ useEffect(() => {
         variant="contained"
         color="primary"
         className={classes.addButton}
-        onClick={() => console.log('Add product button clicked')}
+        onClick={() => {
+          navigate('/product/add', {replace: true});
+          
+        }}
       >
         Add New Product
       </Button>
