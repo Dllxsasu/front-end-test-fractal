@@ -33,7 +33,7 @@ const Nav = () => {
           </Typography>
           <Link  to="/product" className={classes.button}>Product List</Link>
           <Link   to="/order" className={classes.button}>Order List</Link>
-                    <Link   to="/product/add" className={classes.button}>Order List</Link>
+                    <Link   to="/product/add" className={classes.button}>Add Product</Link>
         </Toolbar>
       </AppBar>
     </div>
