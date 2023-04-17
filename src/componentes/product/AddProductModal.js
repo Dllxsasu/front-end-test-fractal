@@ -7,13 +7,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
+ 
   Box,
 } from "@material-ui/core";
 
@@ -43,7 +37,7 @@ function AddProductModal({ open, onClose, onSave, products }) {
   };
 
   const handleSubmit = (event) => {
- //   event.preventDefault();
+    event.preventDefault();
  if (productId  == "") {
   alert('Please select a product.');
   return;
@@ -92,7 +86,7 @@ if (quantity <= 0) {
             required
             margin="normal"
           />
-          <Button variant="contained" color="primary" onClick={()=>handleSubmit()} type="submit">
+          <Button variant="contained" color="primary" onClick={(e)=>handleSubmit(e)} type="submit">
             Save
           </Button>
           <Button variant="contained"  color="secondary" onClick={onClose}>

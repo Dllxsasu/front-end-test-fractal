@@ -51,8 +51,9 @@ const handleDelete = () => {
       error=> {alert("error in delete")}
       ); 
     
-    setIsDeleteModalOpen(false);
+ 
     }
+    setIsDeleteModalOpen(false);
   };
   function editar(row){
     if(validStatus(row.status)){
@@ -61,9 +62,7 @@ const handleDelete = () => {
    
   }
 
-  const handleAddProduct = (product, qty) => {
-    
-  };
+
 
   function validStatus(status,op=1){
     var valid = status != STATUS.COMPLETE;
@@ -72,7 +71,7 @@ const handleDelete = () => {
         var msg = "";
         switch(op){
             case 1:
-                msg="IT CANNOT BE DELETED SINCE THE ORDER IS ALREADY COMPLETED             ";
+                msg="IT CANNOT BE EDIT SINCE THE ORDER IS ALREADY COMPLETED             ";
                 break;
             case 2: 
                 msg="IT CANNOT BE DELETED SINCE THE ORDER IS ALREADY COMPLETED                ";

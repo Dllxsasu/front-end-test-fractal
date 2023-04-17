@@ -89,8 +89,8 @@ const ProductForm = () => {
 
     if(id){
        
-        ProductService.update(id,data).
-        then(rsp => {
+        ProductService.update(id,data)
+        .then(rsp => {
             alert("save success");
              navigate('/product', {replace: true});
         }, error =>{

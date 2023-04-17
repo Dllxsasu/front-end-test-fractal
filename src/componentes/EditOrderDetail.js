@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -7,13 +7,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
+ 
   Box,
 } from "@material-ui/core";
 
@@ -31,8 +25,8 @@ const style = {
 
 
 function EditOrderDetail({ open, onClose, onSave, products, product }) {
-  const [productId, setProductId] = useState(product.id);
-  const [quantity, setQuantity] = useState(product.quantity);
+  const [productId, setProductId] = useState("");
+  const [quantity, setQuantity] = useState("");
   const PRODUCTS =products;
   const handleProductChange = (event) => {
     setProductId(event.target.value);
@@ -41,19 +35,29 @@ function EditOrderDetail({ open, onClose, onSave, products, product }) {
   const handleQuantityChange = (event) => {
     setQuantity(event.target.value);
   };
+  useEffect(() => {
+   
+    setProductId(product.id);
+    setQuantity(product.quantity);
 
-  const handleSubmit = (event) => {
- //   event.preventDefault();
- if (!productId  <= 0) {
-    alert('Please select a product.');
-    return;
-  }
+    
 
-  if (quantity > 0) {
-    alert('The quantity has to be greater than 0.');
-    return;
-  }
-    onSave({ productId, quantity });
+  }, [product]);
+  const handleSubmit = (eventx) => {
+    eventx.preventDefault();
+    if (productId  == "") {
+      alert('Please select a product.');
+      return;
+    }
+    if (quantity  == "") {
+      alert('Please insert a quantity.');
+      return;
+    }
+    if (quantity <= 0) {
+      alert('The quantity has to be greater than 0.');
+      return;
+    }
+    onSave({ productId, quantity,  });
     setProductId("");
     setQuantity("");
   };
@@ -70,6 +74,8 @@ function EditOrderDetail({ open, onClose, onSave, products, product }) {
               value={productId}
               onChange={handleProductChange}
               fullWidth
+              required
+             disabled={true}
             >
               {PRODUCTS.map((product) => (
                 <MenuItem key={product.id} value={product.id}>
@@ -85,9 +91,10 @@ function EditOrderDetail({ open, onClose, onSave, products, product }) {
             value={quantity}
             onChange={handleQuantityChange}
             fullWidth
+            required
             margin="normal"
           />
-          <Button variant="contained" color="primary" onClick={()=>handleSubmit()} type="submit" disabled={!productId || !quantity || quantity <= 0}>
+          <Button variant="contained" color="primary" onClick={(e)=>handleSubmit(e)} type="submit" >
             Save
           </Button>
           <Button variant="contained"  color="secondary" onClick={onClose}>

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React  from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button } from '@mui/material';
 
 
 function TableProducts({ editf, deletef,  data }){
 
-    function edit(row){
-
-    }
+    
 
 return(  
      <TableContainer component={Paper}>
@@ -36,7 +34,7 @@ return(
                 <Button onClick={ ()=> editf(row)}> Edit</Button>
               </TableCell>
               <TableCell align="right">
-                <Button  onClick={() => {deletef(row.id)}} color="secondary">Delete</Button>
+                <Button  onClick={() => {deletef(row)}} color="secondary">Delete</Button>
               </TableCell>
           </TableRow>
           

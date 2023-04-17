@@ -9,6 +9,8 @@ import TableProducts from './TableProducts';
 import OrderService from '../services/OrderService';
 import { STATUS } from '../core/constans';
 import EditOrderDetail from './EditOrderDetail';
+import DeleteConfirmationModal from './modals/DeleteConfirmationModal ';
+import { FilterAltRounded } from '@mui/icons-material';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -29,14 +31,18 @@ const OrderForm = () => {
   const classes = useStyles();
   const { id } = useParams();  const operation = id?'edit':'add';
   const [status, setStatus] = useState(STATUS.PENDING);
-  const [name, setName] = useState('');
+  const [detail, setDetail] = useState({id:"",quantity:""});
 
   const navigate = useNavigate();
   const [products,setProducts]= useState([]);
   const [totalPrice,setTotalPrice]= useState(0);
   const [orderDetail, setOrderDetail] = useState([]);
   const [orderDate, setOrderDate] = useState(new Date().toISOString().substr(0, 10));
- 
+  //mODALS
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+
   useEffect(() => {
 
     ProductService.get()
@@ -48,7 +54,7 @@ const OrderForm = () => {
     if (id) {
         OrderService.getById(id)
         .then(response => {   
-          console.log(response.data)  
+         
           setTotalPrice(response.data.total)      
           setOrderDate(response.data.date);
           setStatus(response.data.status);
@@ -89,8 +95,7 @@ const OrderForm = () => {
        
       OrderService.update(id,data)
         .then(rsp => {
-          console.log(data);
-          console.log(rsp);
+          
             alert("Succesful edit");
              navigate('/my-orders', {replace: true});
         }, error =>{
@@ -104,7 +109,7 @@ const OrderForm = () => {
             navigate('/my-orders', {replace: true});
             //    history.push('/products');
             alert("the register was successful")
-                console.log(response.data);
+             
             })
             .catch(error => {
                 if (error.response.status ===400) {
@@ -117,9 +122,13 @@ const OrderForm = () => {
         event.preventDefault();
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+function filterProductsByOrders(){
+  let filterx =products.filter(i =>  orderDetail.findIndex(item => item.id ===i.id) !=-1 );
+  setProducts(filterx);
+ // orderDetail.findIndex(item => item.id == detail.id);
+}
   const handleOpenModal = () => {
+    filterProductsByOrders();
     setIsModalOpen(true);
   };
 
@@ -137,26 +146,53 @@ const OrderForm = () => {
   };
  // const handleSaveProduct =
   const editOrderDetailF =  (row) =>{
-    alert("Not implement")
-    //setIsModalEditOpen(true);
+    //alert("Not implement")
+    console.log(row);
+    products.push(row);
+    setDetail(row)
+    setProducts(products);
+    updateTotalPrice();
+    console.log(detail);
+    setIsModalEditOpen(true);
   }
-  const deleteOrderDetail =  (idP) =>{
-    const index = orderDetail.findIndex(item => item.id === idP);
+  const handleEditProductModal = ({ productId, quantity }) => {
 
-    if(id){
+    const index = orderDetail.findIndex(item => item.id == detail.id);
+    if(index != -1){
+
+    
+    console.log(orderDetail[index])
+    orderDetail[index].id = productId;
+    orderDetail[index].quantity = quantity;
+    orderDetail[index].totalPrice =orderDetail[index].price *  quantity;
+    if(orderDetail[index].idDetail){
+      orderDetail[index].idStatus=2;
+    }
+  }
+    setOrderDetail(orderDetail);
+  alert("it's eddited");
+  updateTotalPrice();
+  products.pop();
+  setIsModalEditOpen(false);
+  };
+  const handleDelete = () => {  
+ 
+    const index = orderDetail.findIndex(item => item.id === detail.id);
+
+    if(id && index !== -1){
       orderDetail[index].idStatus =-1;
      // products.push(orderDetail[index]);
       
       setProducts(products);
       setOrderDetail( orderDetail);
-      console.log(orderDetail)
+     // console.log(orderDetail)
     }else{
       if (index !== -1) {
        
         products.push(orderDetail[index]);
         orderDetail.splice(index, 1);
       
-        const x=orderDetail.filter(i => i.id != idP);
+        const x=orderDetail.filter(i => i.id != detail.id);
 
         setOrderDetail(x);
       
@@ -164,23 +200,31 @@ const OrderForm = () => {
       }
     }
     updateTotalPrice();
+    
+    setIsDeleteModalOpen(false);
+    
+  };
+  const deleteOrderDetail =  (row) =>{
+setDetail(row);
+setIsDeleteModalOpen(true);
+ //   detail
+   
   }
   function addOrdeDetail(obj, arrAdd,arrDel){
     
     const index = arrDel.findIndex(item => item.id === obj.productId);
-    console.log(index)
-    console.log(arrDel)
+   
 
       if (index !== -1) {
         arrDel[index].idStatus = 0;
         arrDel[index].quantity = parseInt(obj.quantity);
         arrDel[index].totalPrice = obj.quantity* arrDel[index].price ;
-        console.log( arrDel[index]);
+       
         arrAdd.push(arrDel[index]);
         
         arrDel.splice(index, 1);
         //setOrderDetail(arrDel);
-        console.log(arrDel)
+      
       }
       return index;
 }
@@ -243,6 +287,11 @@ setTotalPrice(totalPrice);
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Product
       </Button>
+      <DeleteConfirmationModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleDelete}
+      />
       <AddProductModal
         products={products}
         open={isModalOpen}
@@ -252,9 +301,9 @@ setTotalPrice(totalPrice);
        <EditOrderDetail
         products={products}
         open={isModalEditOpen}
-          product={{id:1,quantity:2}}
-        onClose={()=> setIsModalEditOpen(false)}
-        onSave={handleSaveProduct}
+          product={detail}
+        onClose={()=> {products.pop(); setIsModalEditOpen(false)}}
+        onSave={handleEditProductModal}
       />
       <TableProducts deletef={deleteOrderDetail} editf={editOrderDetailF} data={orderDetail} />
       <Button variant="contained" color="primary" className={classes.button} type="submit">
