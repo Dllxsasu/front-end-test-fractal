@@ -145,7 +145,7 @@ const OrderForm = () => {
 
     if(id){
       orderDetail[index].idStatus =-1;
-      products.push(orderDetail[index]);
+     // products.push(orderDetail[index]);
       
       setProducts(products);
       setOrderDetail( orderDetail);
