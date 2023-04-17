@@ -5,7 +5,7 @@ const API_BASE_URL = '/api/order';
 
 const local = "http://localhost:5000/order";
 const axiosInstance = axios.create({
-  baseURL:  local 
+  baseURL:  API_BASE_URL 
 });
 
   
