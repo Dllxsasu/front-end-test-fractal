@@ -11,12 +11,12 @@ const OrderService = {
     return axios.get(`${BASE_URL}/${id}`);
   },
 
-  create: (product) => {
-    return axios.post(BASE_URL, product);
+  create: (obj) => {
+    return axios.post(BASE_URL, obj);
   },
 
-  update: (id, product) => {
-    return axios.put(`${BASE_URL}/${id}`, product);
+  update: (id, obj) => {
+    return axios.put(`${BASE_URL}/${id}`, obj);
   },
 
   delete: (id) => {

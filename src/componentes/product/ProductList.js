@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button } from '@mui/material';
-import DeleteConfirmationModal from './modals/DeleteConfirmationModal ';
-import ProductService from './services/ProductService';
+
+
 import { Container, Typography, makeStyles } from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
+import ProductService from '../../services/ProductService';
+import DeleteConfirmationModal from '../modals/DeleteConfirmationModal ';
 const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: 'center',
@@ -15,35 +17,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ProductList(props) {
-
- 
-  
-  const [selectedProduct, setSelectedProduct] = useState(null);
-const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-const [products, setProducts] = useState([]);
-useEffect(() => {
-  ProductService.get()
-    .then(response =>{
-      setProducts(response.data);
-      console.log(response.data);
-    } )
-    .catch(error => console.error(error));
-}, []);
-
-
-  const handleProductDelete = () => {
-    
-    console.log("le dio a eliminar");
-    setIsDeleteModalOpen(false);
-  };
   const classes = useStyles();
   const navigate = useNavigate();
-  const rows = [
-    { id: 1, name: 'John Doe', price: 1 },
-    { id: 2, name: 'Jane Smith', price: 23},
-    { id: 3, name: 'Bob Johnson', price: 45 },
-    // Agrega más filas según sea necesario
-  ];
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    ProductService.get()
+        .then(response =>{
+          setProducts(response.data);
+          console.log(response.data);
+        } )
+        .catch(error => {
+          
+          console.error(error)
+        });
+    }, []);
+
+
+  const handleProductDelete = () => {  
+    ProductService.delete(selectedProduct.id).then(
+      rsp=>{
+        alert("Delete ok")
+
+        setProducts(products.filter(i => i.id !== selectedProduct.id));
+      },
+      error=> {alert("error in delete")}
+      ); 
+    
+    setIsDeleteModalOpen(false);
+  };
+  function editar(id){
+    navigate('/product/add/'+id, {replace: true});
+  }
+  
+
+
+
   return (
     <Container>
       <Typography variant="h4" className={classes.title}>
@@ -61,7 +72,7 @@ useEffect(() => {
         Add New Product
       </Button>
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="Tabla de datos">
+      <Table sx={{ minWidth: 650 }} >
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>            
@@ -81,7 +92,7 @@ useEffect(() => {
               <TableCell align="right">{row.price}</TableCell>
            
               <TableCell align="right">
-                  <Button>Edit</Button>
+                  <Button onClick={ ()=> editar(row.id)}> Edit</Button>
                 </TableCell>
                 <TableCell align="right">
                   <Button  onClick={() => {

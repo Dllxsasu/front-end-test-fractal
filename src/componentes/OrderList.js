@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button } from '@mui/material';
 import DeleteConfirmationModal from "./modals/DeleteConfirmationModal ";
-import OrderService from "./services/OrderService";
+import OrderService from "../services/OrderService";
 import { Container, Typography, makeStyles } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
+import { STATUS } from "../core/constans";
 const useStyles = makeStyles((theme) => ({
     title: {
       textAlign: 'center',
@@ -24,35 +25,79 @@ function OrderList(props) {
 */
 const classes = useStyles();
 const navigate = useNavigate();
-const [selectedProduct, setSelectedProduct] = useState(null);
+const [selectedItem, setSelectedItem] = useState(null);
 const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [orders, setOrders] = useState([]);
 useEffect(() => {
   OrderService.get()
     .then(response =>{
         setOrders(response.data);
-      console.log(response.data);
+    
     } )
     .catch(error => console.error(error));
 }, []);
-  const handleProductDelete = () => {
-   
+
+
+const handleDelete = () => {  
+    if(validStatus(selectedItem.status,2) ){
+       console.log(selectedItem)
+    OrderService.delete(selectedItem.id).then(
+      rsp=>{
+        console.log(rsp);
+        alert("Delete ok")
+
+        setOrders(orders.filter(i => i.id !== selectedItem.id));
+      },
+      error=> {alert("error in delete")}
+      ); 
+    
     setIsDeleteModalOpen(false);
+    }
   };
+  function editar(row){
+    if(validStatus(row.status)){
+        navigate('/add-order/'+row.id, {replace: true});
+    }
+   
+  }
+
+  const handleAddProduct = (product, qty) => {
+    
+  };
+
+  function validStatus(status,op=1){
+    var valid = status != STATUS.COMPLETE;
+
+    if(valid==false){
+        var msg = "";
+        switch(op){
+            case 1:
+                msg="IT CANNOT BE DELETED SINCE THE ORDER IS ALREADY COMPLETED             ";
+                break;
+            case 2: 
+                msg="IT CANNOT BE DELETED SINCE THE ORDER IS ALREADY COMPLETED                ";
+                break;
+                default:break;
+        }
+        alert(msg)
+
+    }
+    return valid;
+  }
 
 
  
   return (
     <Container>
       <Typography variant="h4" className={classes.title}>
-        List of orders
+        My orders
       </Typography>
       <Button
         variant="contained"
         color="primary"
         className={classes.addButton}
         onClick={() => {
-            navigate('/product/add', {replace: true});
+            navigate('/add-order', {replace: true});
             
           }}
       >
@@ -60,7 +105,7 @@ useEffect(() => {
       </Button>
     
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="Tabla de datos">
+      <Table sx={{ minWidth: 650 }} >
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>                      
@@ -83,11 +128,11 @@ useEffect(() => {
               <TableCell align="right">{row.total}</TableCell>
               <TableCell align="right">{row.status}</TableCell>
               <TableCell align="right" color="primary">
-                  <Button >Edit</Button>
+                  <Button  onClick={()=> {editar(row)}}>Edit</Button>
                 </TableCell>
                 <TableCell align="right">
                   <Button onClick={() => {
-                    setSelectedProduct(row);
+                    setSelectedItem(row);
                     setIsDeleteModalOpen(true);
                   }} color="secondary" >Delete</Button>
                 </TableCell>
@@ -98,7 +143,7 @@ useEffect(() => {
       <DeleteConfirmationModal
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        onDelete={handleProductDelete}
+        onDelete={handleDelete}
       />
     </TableContainer>
     </Container>

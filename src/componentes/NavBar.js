@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ProductList from './ProductList';
-import OrderList from './OrderList';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +31,7 @@ const Nav = () => {
             <Link to="/" className={classes.title}>My App</Link>
           </Typography>
           <Link  to="/product" className={classes.button}>Product List</Link>
-          <Link   to="/order" className={classes.button}>Order List</Link>
+          <Link   to="/my-orders" className={classes.button}>Order List</Link>
                     <Link   to="/product/add" className={classes.button}>Add Product</Link>
         </Toolbar>
       </AppBar>
