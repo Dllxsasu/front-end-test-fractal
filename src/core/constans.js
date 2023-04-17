@@ -4,4 +4,8 @@ export class STATUS {
     static PENDING="PENDING";
 
 }
+
+export class config {
+    static API="c";
+}
   

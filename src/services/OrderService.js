@@ -1,26 +1,33 @@
 import axios from 'axios';
+import { config } from '../core/constans';
 
-const BASE_URL = 'http://localhost:8080/order';
+const API_BASE_URL = '/api/order';
 
+const local = "http://localhost:5000/order";
+const axiosInstance = axios.create({
+  baseURL:  local 
+});
+
+  
 const OrderService = {
   get: () => {
-    return axios.get(`${BASE_URL}`);
+    return axiosInstance.get('/');
   },
 
   getById: (id) => {
-    return axios.get(`${BASE_URL}/${id}`);
+    return axiosInstance.get(`/${id}`);
   },
 
-  create: (obj) => {
-    return axios.post(BASE_URL, obj);
+  create: (product) => {
+    return axiosInstance.post('/', product);
   },
 
-  update: (id, obj) => {
-    return axios.put(`${BASE_URL}/${id}`, obj);
+  update: (id, product) => {
+    return axiosInstance.put(`/${id}`, product);
   },
 
   delete: (id) => {
-    return axios.delete(`${BASE_URL}/${id}`);
+    return axiosInstance.delete(`/${id}`);
   }
 };
 

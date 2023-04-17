@@ -123,12 +123,15 @@ const OrderForm = () => {
   };
 
 function filterProductsByOrders(){
-  let filterx =products.filter(i =>  orderDetail.findIndex(item => item.id ===i.id) !=-1 );
+  let filterx =products.filter(i =>  orderDetail.findIndex(item => item.id ===i.id && item.idStatus!=-1) ==-1 );
+  console.log(filterx);
   setProducts(filterx);
  // orderDetail.findIndex(item => item.id == detail.id);
 }
   const handleOpenModal = () => {
+ 
     filterProductsByOrders();
+    
     setIsModalOpen(true);
   };
 

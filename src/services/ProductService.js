@@ -1,26 +1,32 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/product';
+const API_BASE_URL = '/api/product';
+
+
+const local = "http://localhost:5000/product";
+const axiosInstance = axios.create({
+  baseURL:  local 
+});
 
 const ProductService = {
   get: () => {
-    return axios.get(`${BASE_URL}`);
+    return axiosInstance.get('/');
   },
 
   getById: (id) => {
-    return axios.get(`${BASE_URL}/${id}`);
+    return axiosInstance.get(`/${id}`);
   },
 
-  create: (product) => {
-    return axios.post(BASE_URL, product);
+  create: (obj) => {
+    return axiosInstance.post('/', obj);
   },
 
-  update: (id, product) => {
-    return axios.put(`${BASE_URL}/${id}`, product);
+  update: (id, obj) => {
+    return axiosInstance.put(`/${id}`, obj);
   },
 
   delete: (id) => {
-    return axios.delete(`${BASE_URL}/${id}`);
+    return axiosInstance.delete(`/${id}`);
   }
 };
 

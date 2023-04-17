@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "http://fractltest-env.eba-mpaszmqa.us-east-1.elasticbeanstalk.com/$1"
+      }
+    ]
+  }
